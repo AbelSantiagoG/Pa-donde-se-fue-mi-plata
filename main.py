@@ -1,5 +1,7 @@
+from collections import defaultdict
 from fastapi import FastAPI, Body, Path
 from typing import List
+from fastapi.responses import JSONResponse
 from egresos import Egresos, get_all_egresos, get_egreso_by_id,  create_new_egreso, delete_egreso
 from ingresos import Income, get_all_incomes, get_income_by_id, create_new_income, delete_income
 from categorias import Categoria, create_new_categoria, delete_categoria, get_all_categorias
@@ -107,3 +109,50 @@ def create_categorie(categorie: Categoria = Body()):
 @app.delete('/categories/{id}',tags=['categories'],response_model=dict,description="Removes specific categorie")
 def remove_categorie(id: int = Path(ge=1)) -> dict:
     return delete_categoria(id, categories)
+
+#REPORTES
+@app.get('/basic_report',tags=['reports'], response_model=List, description="Returns the basic report")
+def get_basic_report():
+    egresos = 0
+    ingresos = 0
+    for expense in egress:
+        egresos+= expense["valor"]
+    for income in incomes:
+        ingresos+= income["valor"]
+    restante = ingresos-egresos
+    return JSONResponse(content={
+        "Basic report":{
+        "Ingresos recibidos": str(ingresos),
+        "Egresos realizados": str(egresos),
+        "Dinero actual": str(restante)
+        }
+
+        },
+    status_code=200)
+
+@app.get('/expanded_report',tags=['reports'],response_model=List, description="Returns incomes and expenses by categories")
+def get_expanded_report():
+    report = {"incomes": [], "egress": []}
+    ingresos = {}
+    egresos = {}
+    for income in ingresos:
+        id = income["categoria"]
+        if id not in ingresos:
+            ingresos[id] = []
+        ingresos[id].append(income)
+    for id, movements in ingresos.items():
+        report["incomes"].append({
+            "Categoria": id,
+            "Movimientos": movements
+        })
+    for egress in egresos:
+        id = egress["categoria"]
+        if id not in egresos:
+            egresos[id] = []
+        egresos[id].append(egress)
+    for id, movements in egresos.items():
+        report["egress"].append({
+            "Categoria": id,
+            "Movimientos": movements
+        })
+    return JSONResponse(content=report, status_code=200)
