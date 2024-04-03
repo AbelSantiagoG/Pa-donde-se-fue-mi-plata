@@ -3,7 +3,7 @@ from typing import List
 from egresos import Egresos, get_all_egresos, get_egreso_by_id,  create_new_egreso, delete_egreso
 from ingresos import Income, get_all_incomes, get_income_by_id, create_new_income, delete_income
 
-tags_metadata = [{"name": "incomes", "description": "imgresos"}  ,  { "name": "egress", "description": "egresos"},]
+tags_metadata = [{"name": "incomes", "description": "imgresos"}  ,  { "name": "egress", "description": "egresos"}, { "name": "reports", "description": "reportes"}]
 
 app = FastAPI(openapi_tags=tags_metadata)
 
