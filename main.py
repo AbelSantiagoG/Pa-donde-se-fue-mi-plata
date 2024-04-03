@@ -54,9 +54,9 @@ egress= [
 
 #CRUD ingresos
 
-@app.get('/incomes',tags=['incomes'],response_model=List[incomes],description="Returns all incomes")
+@app.get('/incomes',tags=['incomes'],response_model=List[Income],description="Returns all incomes")
 def get_incomes():
-    return get_all_incomes(Income)
+    return get_all_incomes(incomes)
 
 @app.get('/incomes/{id}',tags=['incomes'],response_model=Income,description="Returns data of one specific income")
 def get_income(id: int ) -> Income:
@@ -72,11 +72,11 @@ def remove_income(id: int = Path(ge=1)) -> dict:
 
 #CRUD egresos
 
-@app.get('/egress',tags=['egress'],response_model=List[incomes],description="Returns all egress")
+@app.get('/egress',tags=['egress'],response_model=List[Egresos],description="Returns all egress")
 def get_egress():
     return get_all_egresos(Egresos)
 
-@app.get('/egress/{id}',tags=['egress'],response_model=Income,description="Returns data of one specific egress")
+@app.get('/egress/{id}',tags=['egress'],response_model=Egresos,description="Returns data of one specific egress")
 def get_egress(id: int ) -> Egresos:
     return get_egreso_by_id(id, egress)
 
