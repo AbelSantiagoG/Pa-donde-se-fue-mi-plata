@@ -140,19 +140,19 @@ def get_expanded_report():
         if id not in ingresos:
             ingresos[id] = []
         ingresos[id].append(income)
-    for id, movements in ingresos.items():
+    for id, transaccion in ingresos.items():
         report["incomes"].append({
             "Categoria": id,
-            "Movimientos": movements
+            "Ingreso": transaccion
         })
     for egress in egresos:
         id = egress["categoria"]
         if id not in egresos:
             egresos[id] = []
         egresos[id].append(egress)
-    for id, movements in egresos.items():
+    for id, transaccion in egresos.items():
         report["egress"].append({
             "Categoria": id,
-            "Movimientos": movements
+            "Egreso": transaccion
         })
     return JSONResponse(content=report, status_code=200)
