@@ -16,7 +16,7 @@ def delete_categoria(id,list):
             list.remove(category)
             return JSONResponse(content={"message": "Category was removed successfully" }, status_code=200)
         
-def create_new_categora(categoria:Categoria, categorias):
+def create_new_categoria(categoria:Categoria, categorias):
     newCategoria = categoria.model_dump()
     categorias.append(newCategoria)
     return JSONResponse(content={

@@ -2,8 +2,14 @@ from fastapi import FastAPI, Body, Path
 from typing import List
 from egresos import Egresos, get_all_egresos, get_egreso_by_id,  create_new_egreso, delete_egreso
 from ingresos import Income, get_all_incomes, get_income_by_id, create_new_income, delete_income
+from categorias import Categoria, create_new_categoria, delete_categoria, get_all_categorias
 
-tags_metadata = [{"name": "incomes", "description": "imgresos"}  ,  { "name": "egress", "description": "egresos"}, { "name": "reports", "description": "reportes"}]
+tags_metadata = [
+                {"name": "incomes", "description": "imgresos"}, 
+                { "name": "egress", "description": "egresos"}, 
+                { "name": "reports", "description": "reportes"},  
+                { "name": "categories", "description": "categorias"}
+]
 
 app = FastAPI(openapi_tags=tags_metadata)
 
@@ -74,7 +80,7 @@ def remove_income(id: int = Path(ge=1)) -> dict:
 
 @app.get('/egress',tags=['egress'],response_model=List[Egresos],description="Returns all egress")
 def get_egress():
-    return get_all_egresos(Egresos)
+    return get_all_egresos(egress)
 
 @app.get('/egress/{id}',tags=['egress'],response_model=Egresos,description="Returns data of one specific egress")
 def get_egress(id: int ) -> Egresos:
@@ -87,3 +93,17 @@ def create_egress(egreso: Egresos = Body()):
 @app.delete('/egress/{id}',tags=['egress'],response_model=dict,description="Removes specific egress")
 def remove_egress(id: int = Path(ge=1)) -> dict:
     return delete_egreso(id, egress)
+
+#CRUD categorías
+
+@app.get('/categories',tags=['categories'],response_model=List[Categoria],description="Returns all categories")
+def get_categories():
+    return get_all_categorias(categories)
+
+@app.post('/categories',tags=['categories'],response_model=dict,description="Creates a new categorie")
+def create_categorie(categorie: Categoria = Body()):
+    return create_new_categoria(categorie, categories)
+
+@app.delete('/categories/{id}',tags=['categories'],response_model=dict,description="Removes specific categorie")
+def remove_categorie(id: int = Path(ge=1)) -> dict:
+    return delete_categoria(id, categories)
