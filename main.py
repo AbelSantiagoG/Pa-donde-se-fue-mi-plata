@@ -4,7 +4,7 @@ from typing import List
 from fastapi.responses import JSONResponse
 from egresos import Egresos, get_all_egresos, get_egreso_by_id,  create_new_egreso, delete_egreso
 from ingresos import Income, get_all_incomes, get_income_by_id, create_new_income, delete_income
-from categorias import Categoria, create_new_categoria, delete_categoria, get_all_categorias
+from src.routers.categorias import Categoria, create_new_categoria, delete_categoria, get_all_categorias
 
 tags_metadata = [
                 {"name": "incomes", "description": "imgresos"}, 
@@ -15,16 +15,7 @@ tags_metadata = [
 
 app = FastAPI(openapi_tags=tags_metadata)
 
-categories= [
-    {"id": 1, "description": "Pago de nómina"},  
-    {"id": 2, "description": "Pago contrato"},
-    {"id": 3, "description": "Pago de arriendo"},  
-    {"id": 4, "description": "Mesada"},
-    {"id": 5, "description": "Alimentación"},  
-    {"id": 6, "description": "Transporte"},
-    {"id": 7, "description": "Ocio"},  
-    {"id": 8, "description": "Malcriadas"},
-    ]
+
 
 incomes= [
     {
@@ -96,19 +87,7 @@ def create_egress(egreso: Egresos = Body()):
 def remove_egress(id: int = Path(ge=1)) -> dict:
     return delete_egreso(id, egress)
 
-#CRUD categorías
 
-@app.get('/categories',tags=['categories'],response_model=List[Categoria],description="Returns all categories")
-def get_categories():
-    return get_all_categorias(categories)
-
-@app.post('/categories',tags=['categories'],response_model=dict,description="Creates a new categorie")
-def create_categorie(categorie: Categoria = Body()):
-    return create_new_categoria(categorie, categories)
-
-@app.delete('/categories/{id}',tags=['categories'],response_model=dict,description="Removes specific categorie")
-def remove_categorie(id: int = Path(ge=1)) -> dict:
-    return delete_categoria(id, categories)
 
 #REPORTES
 @app.get('/basic_report',tags=['reports'], response_model=List, description="Returns the basic report")
