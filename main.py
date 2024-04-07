@@ -2,9 +2,8 @@ from collections import defaultdict
 from fastapi import FastAPI, Body, Path
 from typing import List
 from fastapi.responses import JSONResponse
-from egresos import Egresos, get_all_egresos, get_egreso_by_id,  create_new_egreso, delete_egreso
-from ingresos import Income, get_all_incomes, get_income_by_id, create_new_income, delete_income
-from categorias import Categoria, create_new_categoria, delete_categoria, get_all_categorias
+from src.middlewares.error_handler import ErrorHandler
+from src.routers.ingresos import incomes_router
 
 tags_metadata = [
                 {"name": "incomes", "description": "imgresos"}, 
@@ -25,6 +24,8 @@ categories= [
     {"id": 7, "description": "Ocio"},  
     {"id": 8, "description": "Malcriadas"},
     ]
+
+app.add_middleware(ErrorHandler)
 
 incomes= [
     {
@@ -60,23 +61,7 @@ egress= [
     }
 ]
 
-#CRUD ingresos
 
-@app.get('/incomes',tags=['incomes'],response_model=List[Income],description="Returns all incomes")
-def get_incomes():
-    return get_all_incomes(incomes)
-
-@app.get('/incomes/{id}',tags=['incomes'],response_model=Income,description="Returns data of one specific income")
-def get_income(id: int ) -> Income:
-    return get_income_by_id(id, incomes)
-
-@app.post('/incomes',tags=['incomes'],response_model=dict,description="Creates a new income")
-def create_income(ingreso: Income = Body()):
-    return create_new_income(ingreso, incomes)
-
-@app.delete('/incomes/{id}',tags=['incomes'],response_model=dict,description="Removes specific income")
-def remove_income(id: int = Path(ge=1)) -> dict:
-    return delete_income(id, incomes)
 
 #CRUD egresos
 
