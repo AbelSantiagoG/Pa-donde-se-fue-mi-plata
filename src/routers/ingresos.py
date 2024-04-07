@@ -61,8 +61,6 @@ def get_income(id: int ) -> Income:
 def create_income(ingreso: Income = Body()):
     return create_new_income(ingreso, incomes)
 
-incomes_router = APIRouter()
-
 @incomes_router.delete('/incomes/{id}',tags=['incomes'],response_model=dict,description="Removes specific income")
 def remove_income(id: int = Path(ge=1)) -> dict:
     return delete_income(id, incomes)
