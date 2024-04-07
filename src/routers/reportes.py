@@ -1,5 +1,8 @@
-
-
+from fastapi import APIRouter, Body, Query, Path, status
+from fastapi.responses import JSONResponse
+from typing import List
+from src.schemas.ingresos import Income
+from fastapi import APIRouter
 
 
 #REPORTES

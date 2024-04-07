@@ -1,16 +1,10 @@
-from pydantic import BaseModel, Field
-from typing import Optional
-from fastapi import FastAPI, Body, Path
+from fastapi import APIRouter, Body, Query, Path, status
 from fastapi.responses import JSONResponse
 from typing import List
+from src.schemas.categorias import Categoria
+from fastapi import APIRouter
 
-
-
-
-class Categoria (BaseModel):
-    id: Optional[int] = Field(default=None, title="Id de la categoria")
-    description: str = Field(min_length=4, max_length=50, title="Descripcion de la categoria")
-
+categories_router = APIRouter()
 
 def get_all_categorias(list):
     return JSONResponse(content=list, status_code=200)
@@ -42,14 +36,14 @@ categories= [
 
 #CRUD categorías
 
-@app.get('/categories',tags=['categories'],response_model=List[Categoria],description="Returns all categories")
+@categories_router.get('/categories',tags=['categories'],response_model=List[Categoria],description="Returns all categories")
 def get_categories():
     return get_all_categorias(categories)
 
-@app.post('/categories',tags=['categories'],response_model=dict,description="Creates a new categorie")
+@categories_router.post('/categories',tags=['categories'],response_model=dict,description="Creates a new categorie")
 def create_categorie(categorie: Categoria = Body()):
     return create_new_categoria(categorie, categories)
 
-@app.delete('/categories/{id}',tags=['categories'],response_model=dict,description="Removes specific categorie")
+@categories_router.delete('/categories/{id}',tags=['categories'],response_model=dict,description="Removes specific categorie")
 def remove_categorie(id: int = Path(ge=1)) -> dict:
     return delete_categoria(id, categories)

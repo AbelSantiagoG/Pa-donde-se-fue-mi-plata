@@ -1,13 +1,9 @@
-from pydantic import BaseModel, Field
-from typing import Optional
+from fastapi import APIRouter, Body, Query, Path, status
 from fastapi.responses import JSONResponse
+from typing import List
+from src.schemas.egresos import Egresos
+from fastapi import APIRouter
 
-class Egresos (BaseModel):
-    id: Optional[int] = Field(default=None, title="Id del egreso")
-    fecha: str = Field(title="Fecha del egreso")
-    descripcion: Optional[str] = Field(title="Descripcion del egreso")
-    valor: float = Field( le=5000001, lg=100,title="Valor del egreso") 
-    categoria: Optional[int] = Field(title="Contraseña del egreso")
 
 egress= [
     {
@@ -25,6 +21,9 @@ egress= [
         "categoria": 7
     }
 ]
+
+egress_router = APIRouter()
+
 
 def get_all_egresos(egresos) :
     return JSONResponse(content=egresos, status_code=200)
@@ -53,18 +52,18 @@ def delete_egreso(id, egresos):
 
 #CRUD egresos
 
-@app.get('/egress',tags=['egress'],response_model=List[Egresos],description="Returns all egress")
+@egress_router.get('/egress',tags=['egress'],response_model=List[Egresos],description="Returns all egress")
 def get_egress():
     return get_all_egresos(egress)
 
-@app.get('/egress/{id}',tags=['egress'],response_model=Egresos,description="Returns data of one specific egress")
+@egress_router.get('/egress/{id}',tags=['egress'],response_model=Egresos,description="Returns data of one specific egress")
 def get_egress(id: int ) -> Egresos:
     return get_egreso_by_id(id, egress)
 
-@app.post('/egress',tags=['egress'],response_model=dict,description="Creates a new egress")
+@egress_router.post('/egress',tags=['egress'],response_model=dict,description="Creates a new egress")
 def create_egress(egreso: Egresos = Body()):
     return create_new_egreso(egreso, egress)
 
-@app.delete('/egress/{id}',tags=['egress'],response_model=dict,description="Removes specific egress")
+@egress_router.delete('/egress/{id}',tags=['egress'],response_model=dict,description="Removes specific egress")
 def remove_egress(id: int = Path(ge=1)) -> dict:
     return delete_egreso(id, egress)
