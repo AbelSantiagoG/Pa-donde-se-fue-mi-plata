@@ -4,7 +4,7 @@ from typing import List
 from src.schemas.ingresos import Income
 from fastapi import APIRouter
 
-incomes= [
+List_incomes= [
     {
         "id": 1,
         "Fecha": "2024-04-02",
@@ -51,16 +51,16 @@ def delete_income(id, incomes):
 
 @incomes_router.get('/incomes',tags=['incomes'],response_model=List[Income],description="Returns all incomes")
 def get_incomes():
-    return get_all_incomes(incomes)
+    return get_all_incomes(List_incomes)
 
 @incomes_router.get('/incomes/{id}',tags=['incomes'],response_model=Income,description="Returns data of one specific income")
 def get_income(id: int ) -> Income:
-    return get_income_by_id(id, incomes)
+    return get_income_by_id(id, List_incomes)
 
 @incomes_router.post('/incomes',tags=['incomes'],response_model=dict,description="Creates a new income")
 def create_income(ingreso: Income = Body()):
-    return create_new_income(ingreso, incomes)
+    return create_new_income(ingreso, List_incomes)
 
 @incomes_router.delete('/incomes/{id}',tags=['incomes'],response_model=dict,description="Removes specific income")
 def remove_income(id: int = Path(ge=1)) -> dict:
-    return delete_income(id, incomes)
+    return delete_income(id, List_incomes)

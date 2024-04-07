@@ -5,7 +5,7 @@ from src.schemas.egresos import Egresos
 from fastapi import APIRouter
 
 
-egress= [
+List_egress= [
     {
         "id": 1,
         "Fecha": "2024-04-02",
@@ -54,16 +54,16 @@ def delete_egreso(id, egresos):
 
 @egress_router.get('/egress',tags=['egress'],response_model=List[Egresos],description="Returns all egress")
 def get_egress():
-    return get_all_egresos(egress)
+    return get_all_egresos(List_egress)
 
 @egress_router.get('/egress/{id}',tags=['egress'],response_model=Egresos,description="Returns data of one specific egress")
 def get_egress(id: int ) -> Egresos:
-    return get_egreso_by_id(id, egress)
+    return get_egreso_by_id(id, List_egress)
 
 @egress_router.post('/egress',tags=['egress'],response_model=dict,description="Creates a new egress")
 def create_egress(egreso: Egresos = Body()):
-    return create_new_egreso(egreso, egress)
+    return create_new_egreso(egreso, List_egress)
 
 @egress_router.delete('/egress/{id}',tags=['egress'],response_model=dict,description="Removes specific egress")
 def remove_egress(id: int = Path(ge=1)) -> dict:
-    return delete_egreso(id, egress)
+    return delete_egreso(id, List_egress)

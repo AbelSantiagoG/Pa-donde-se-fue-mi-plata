@@ -1,18 +1,21 @@
 from fastapi import APIRouter, Body, Query, Path, status
 from fastapi.responses import JSONResponse
 from typing import List
-from src.schemas.ingresos import Income
 from fastapi import APIRouter
+from src.routers.ingresos import List_incomes
+from src.routers.egresos import List_egress
+from src.routers.categorias import List_categories
 
+reportes_router = APIRouter()
 
 #REPORTES
-@app.get('/basic_report',tags=['reports'], response_model=List, description="Returns the basic report")
+@reportes_router.get('/basic_report',tags=['reports'], response_model=List, description="Returns the basic report")
 def get_basic_report():
     egresos = 0
     ingresos = 0
-    for expense in egress:
+    for expense in List_egress:
         egresos+= expense["valor"]
-    for income in incomes:
+    for income in List_incomes:
         ingresos+= income["valor"]
     restante = ingresos-egresos
     return JSONResponse(content={
@@ -21,34 +24,56 @@ def get_basic_report():
         "Egresos realizados": str(egresos),
         "Dinero actual": str(restante)
         }
+    },
+    status_code=200)
 
+@reportes_router.get('/expanded_report',tags=['Reports'],description="Return expanded report")
+def get_expanded_report():
+    return expanded_report(List_categories,List_egress, List_incomes)
+
+def expanded_report(listCategories, listExpense, listIncome):
+    diccionary = {category["id"]: [] for category in listCategories}
+
+    for category, valor in diccionary.items():
+        for expense in listExpense:
+            if category == expense["category"]:
+                addExpense = {"expense": expense}
+                valor.append(addExpense)
+        for income in listIncome:
+            if category == income["category"]:
+                addIncome = {"income": income}
+                valor.append(addIncome)
+
+    report = change_id_categories(listCategories, diccionary)
+    return JSONResponse(content={
+        "Expanded report":report
         },
     status_code=200)
 
-@app.get('/expanded_report',tags=['reports'],response_model=List, description="Returns incomes and expenses by categories")
-def get_expanded_report():
-    report = {"incomes": [], "egress": []}
-    ingresos = {}
-    egresos = {}
-    for income in ingresos:
-        id = income["categoria"]
-        if id not in ingresos:
-            ingresos[id] = []
-        ingresos[id].append(income)
-    for id, transaccion in ingresos.items():
-        report["incomes"].append({
-            "Categoria": id,
-            "Ingreso": transaccion
-        })
-    for egress in egresos:
-        id = egress["categoria"]
-        if id not in egresos:
-            egresos[id] = []
-        egresos[id].append(egress)
-    for id, transaccion in egresos.items():
-        report["egress"].append({
-            "Categoria": id,
-            "Egreso": transaccion
-        })
-    return JSONResponse(content=report, status_code=200)
+def general_report(listExpense, ListIncome):
+    totalExpense = 0
+    totalIncome = 0
+    for expense in listExpense:
+        totalExpense +=expense["value"]
+    for income in ListIncome:
+        totalIncome+= income["value"]
+    subs = totalIncome-totalExpense
+    return JSONResponse(content={
+        "General report":{
+        "Income": "$" + str(totalIncome),
+        "Expense": "$" + str(totalExpense),
+        "Substraction": "$" + str(subs)
+        }
+        },
+    status_code=200)
 
+def change_id_categories(categories, diccionary):
+    newDict = {}
+    # diccionario que mapee los id de las categorÃ­as a sus nombres
+    category_id_to_name = {category["id"]: category["name"] for category in categories}
+
+
+    for key, value in diccionary.items():
+        #Aqui esta cogiendo el valor de category_id_to_name y lo esta poniendo como llave en el nuevo diccionario y le asigna el valor que tenia antes
+        newDict[category_id_to_name[key]] = value
+    return newDict
