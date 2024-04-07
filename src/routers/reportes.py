@@ -27,7 +27,7 @@ def get_basic_report():
     },
     status_code=200)
 
-@reportes_router.get('/expanded_report',tags=['Reports'],description="Return expanded report")
+@reportes_router.get('/expanded_report',tags=['reports'],description="Return expanded report")
 def get_expanded_report():
     return expanded_report(List_categories,List_egress, List_incomes)
 
@@ -36,11 +36,11 @@ def expanded_report(listCategories, listExpense, listIncome):
 
     for category, valor in diccionary.items():
         for expense in listExpense:
-            if category == expense["category"]:
+            if category == expense["categoria"]:
                 addExpense = {"expense": expense}
                 valor.append(addExpense)
         for income in listIncome:
-            if category == income["category"]:
+            if category == income["categoria"]:
                 addIncome = {"income": income}
                 valor.append(addIncome)
 
@@ -54,9 +54,9 @@ def general_report(listExpense, ListIncome):
     totalExpense = 0
     totalIncome = 0
     for expense in listExpense:
-        totalExpense +=expense["value"]
+        totalExpense +=expense["valor"]
     for income in ListIncome:
-        totalIncome+= income["value"]
+        totalIncome+= income["valor"]
     subs = totalIncome-totalExpense
     return JSONResponse(content={
         "General report":{
@@ -70,9 +70,7 @@ def general_report(listExpense, ListIncome):
 def change_id_categories(categories, diccionary):
     newDict = {}
     # diccionario que mapee los id de las categorÃ­as a sus nombres
-    category_id_to_name = {category["id"]: category["name"] for category in categories}
-
-
+    category_id_to_name = {category["id"]: category["nombre"] for category in categories}
     for key, value in diccionary.items():
         #Aqui esta cogiendo el valor de category_id_to_name y lo esta poniendo como llave en el nuevo diccionario y le asigna el valor que tenia antes
         newDict[category_id_to_name[key]] = value

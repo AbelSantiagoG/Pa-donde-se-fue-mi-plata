@@ -1,25 +1,25 @@
 # Integrantes
-Abel Santiago Gómez López
 Miguel Ángel Pérez Clavijo
+Abel Santiago Gómez López
 
 # Endpoints 
 ## Ingresos
-GET	/incomes --> Obtener todos los ingresos
-GET	/incomes/{id} --> Obtener un ingreso por su id
-POST /incomes --> Crear un ingreso
-DELETE /incomes/{id} --> Eliminar un ingreso
+- GET	    http://localhost:8000/incomes/incomes
+- GET	    http://localhost:8000/incomes/incomes/:id
+- POST      http://localhost:8000/incomes/incomes
+- DELETE    http://localhost:8000/incomes/incomes/:id
 
 ## Egresos
-GET	/egress --> Obtener todos los egresos
-GET	/egress/{id} --> Obtener un egreso por su id
-POST /egress --> Crear un egreso
-DELETE /egress/{id} --> Eliminar un egreso
+- GET	    http://localhost:8000/egress/egress
+- GET	    http://localhost:8000/egress/egress/:id
+- POST      http://localhost:8000/egress/egress
+- DELETE    http://localhost:8000/egress/egress/:id
 
 ## Categorías
-GET	/categories --> Obtener todas las categorías
-POST /categories --> Crear una categoría
-DELETE /categories/{id} --> Eliminar una categoría
+- GET	    http://localhost:8000/categories/categories
+- POST      http://localhost:8000/categories/categories
+- DELETE    http://localhost:8000/categories/categories/:id
 
 ##  Reportes
-GET	/basic_report	Obtener un reporte básico (ingresos, egresos, dinero actual)
-GET	/expanded_report	Obtener ingresos y egresos por categorías
+- GET	    http://localhost:8000/reports/basic_report
+- GET	    http://localhost:8000/reports/expanded_report

@@ -4,6 +4,7 @@ from src.middlewares.error_handler import ErrorHandler
 from src.routers.ingresos import incomes_router
 from src.routers.egresos import egress_router
 from src.routers.categorias import categories_router
+from src.routers.reportes import reportes_router
 
 
 ##################################################
@@ -29,7 +30,7 @@ app.add_middleware(ErrorHandler)
 app.include_router(prefix="/incomes", router=incomes_router)
 app.include_router(prefix="/egress", router=egress_router)
 app.include_router(prefix="/categories", router=categories_router)
-app.include_router(prefix="/reports", router=report_router)
+app.include_router(prefix="/reports", router=reportes_router)
 
 #################################################
 

@@ -7,14 +7,14 @@ from fastapi import APIRouter
 categories_router = APIRouter()
 
 List_categories= [
-    {"id": 1, "description": "Pago de nómina"},  
-    {"id": 2, "description": "Pago contrato"},
-    {"id": 3, "description": "Pago de arriendo"},  
-    {"id": 4, "description": "Mesada"},
-    {"id": 5, "description": "Alimentación"},  
-    {"id": 6, "description": "Transporte"},
-    {"id": 7, "description": "Ocio"},  
-    {"id": 8, "description": "Malcriadas"},
+    {"id": 1, "nombre": "Pago de nómina"},  
+    {"id": 2, "nombre": "Pago contrato"},
+    {"id": 3, "nombre": "Pago de arriendo"},  
+    {"id": 4, "nombre": "Mesada"},
+    {"id": 5, "nombre": "Alimentación"},  
+    {"id": 6, "nombre": "Transporte"},
+    {"id": 7, "nombre": "Ocio"},  
+    {"id": 8, "nombre": "Malcriadas"},
 ]
 
 def get_all_categorias(list):
