@@ -1,6 +1,6 @@
 # Integrantes
-Miguel Ángel Pérez Clavijo
-Abel Santiago Gómez López
+- Miguel Ángel Pérez Clavijo
+- Abel Santiago Gómez López
 
 # Endpoints 
 ## Ingresos
