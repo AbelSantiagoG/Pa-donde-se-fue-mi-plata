@@ -3,6 +3,9 @@ from fastapi.responses import JSONResponse
 from typing import List
 from src.schemas.ingresos import Income
 from fastapi import APIRouter
+from src.config.database import SessionLocal 
+from src.models.ingreso import Ingreso as IngresoModel 
+from fastapi.encoders import jsonable_encoder
 
 List_incomes= [
     {

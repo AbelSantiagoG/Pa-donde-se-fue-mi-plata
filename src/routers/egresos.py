@@ -3,9 +3,12 @@ from fastapi.responses import JSONResponse
 from typing import List
 from src.schemas.egresos import Egresos
 from fastapi import APIRouter
+from src.config.database import SessionLocal 
+from src.models.egreso import Egreso as EgresoModel 
+from fastapi.encoders import jsonable_encoder
 
 
-List_egress= [
+""" List_egress= [
     {
         "id": 1,
         "Fecha": "2024-04-02",
@@ -20,7 +23,7 @@ List_egress= [
         "valor":  15.9,
         "categoria": 7
     }
-]
+] """
 
 egress_router = APIRouter()
 

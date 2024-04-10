@@ -3,6 +3,9 @@ from fastapi.responses import JSONResponse
 from typing import List
 from src.schemas.categorias import Categoria
 from fastapi import APIRouter
+from src.config.database import SessionLocal 
+from src.models.categoria import Categoria as CategoriaModel 
+from fastapi.encoders import jsonable_encoder
 
 categories_router = APIRouter()
 
