@@ -7,63 +7,77 @@ from src.config.database import SessionLocal
 from src.models.ingreso import Ingreso as IngresoModel 
 from fastapi.encoders import jsonable_encoder
 
-List_incomes= [
-    {
-        "id": 1,
-        "Fecha": "2024-04-02",
-        "descripcion": "se ingresó plata",
-        "valor":  13.69,
-        "categoria": 1
-    },
-    {
-        "id": 2,
-        "Fecha": "2024-04-02",
-        "descripcion": "se ingresó plata",
-        "valor":  12.99,
-        "categoria": 2
-    }
-]
-
 incomes_router = APIRouter(prefix='/incomes', tags=['incomes'])
 
 def get_all_incomes(incomes) :
-    return JSONResponse(content=incomes, status_code=200)
+    db= SessionLocal()    
+    query = db.query(IngresoModel)
+    result = query.all()
+    return JSONResponse(jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
 def get_income_by_id(id,incomes):
-    for element in incomes:
-        if element["id"] == id:
-            return JSONResponse(content=element, status_code=200)
-    return JSONResponse(content={"message":"Income not found"},status_code=404)
+    db = SessionLocal()    
+    element = db.query(IngresoModel).filter(IngresoModel.id == id).first()    
+    if not element:        
+        return JSONResponse(
+            content={            
+                "message": "The requested income was not found",            
+                "data": None        }, 
+            status_code=status.HTTP_404_NOT_FOUND
+            )    
+    return JSONResponse(
+        content=jsonable_encoder(element),                        
+        status_code=status.HTTP_200_OK
+        )
 
-def create_new_income(income:Income, incomes):
-    newIncome = income.model_dump()
-    incomes.append(newIncome)
-    return JSONResponse(content={
-        "message": "The user was created successfully",
-        "data": newIncome
-        }, status_code=201) 
+def create_new_income(ingreso:Income = Body()):
+    db = SessionLocal()    
+    new_egress = IngresoModel(**ingreso.model_dump())    
+    db.add(new_egress)
+    db.commit()    
+    return JSONResponse(
+        content={        
+        "message": "The income was successfully created",        
+        "data": ingreso.model_dump()    
+        }, 
+        status_code=status.HTTP_201_CREATED
+    ) 
 
-def delete_income(id, incomes):
-    for element in incomes:
-        if element['id'] == id:
-            incomes.remove(element)
-            return JSONResponse(content={"message": "The income was removed successfully", "data": None }, status_code=200)
-    return JSONResponse(content={ "message": "The income does not exists", "data": None }, status_code=404)
+def delete_income(id: int = Path(ge=1)):
+    db = SessionLocal()    
+    element = db.query(IngresoModel).filter(IngresoModel.id == id).first()    
+    if not element:        
+        return JSONResponse(
+            content={            
+                "message": "The requested income was not found",            
+                "data": None        
+                }, 
+            status_code=status.HTTP_404_NOT_FOUND
+            )    
+    db.delete(element)    
+    db.commit()    
+    return JSONResponse(
+        content={        
+            "message": "The income wass removed successfully",        
+            "data": None    
+            }, 
+        status_code=status.HTTP_200_OK
+        )
 
 #CRUD ingresos
 
-@incomes_router.get('/',response_model=List[Income],description="Returns all incomes")
+@incomes_router.get('',response_model=List[Income],description="Returns all incomes")
 def get_incomes():
-    return get_all_incomes(List_incomes)
+    return get_all_incomes()
 
-@incomes_router.get('/{id}',response_model=Income,description="Returns data of one specific income")
+@incomes_router.get('{id}',response_model=Income,description="Returns data of one specific income")
 def get_income(id: int ) -> Income:
-    return get_income_by_id(id, List_incomes)
+    return get_income_by_id(id)
 
-@incomes_router.post('/',response_model=dict,description="Creates a new income")
+@incomes_router.post('',response_model=dict,description="Creates a new income")
 def create_income(ingreso: Income = Body()):
-    return create_new_income(ingreso, List_incomes)
+    return create_new_income(ingreso)
 
-@incomes_router.delete('/{id}',response_model=dict,description="Removes specific income")
+@incomes_router.delete('{id}',response_model=dict,description="Removes specific income")
 def remove_income(id: int = Path(ge=1)) -> dict:
-    return delete_income(id, List_incomes)
+    return delete_income(id)

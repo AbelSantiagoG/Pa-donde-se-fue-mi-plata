@@ -4,45 +4,62 @@ from typing import List
 from src.schemas.categoria_egreso import Categoria_Egreso 
 from fastapi import APIRouter
 from src.config.database import SessionLocal 
-from src.models.categoria_egreso import Categoria_Egreso as CategoriaModel 
+from src.models.categoria_egreso import Categoria_Egreso as CategoriaEgresoModel 
 from fastapi.encoders import jsonable_encoder
 
-categories_egress_router = APIRouter(prefix='/categories-egress', tags=['categories_egress'])
+categories_egress_router = APIRouter(tags=['categories_egress'])
 
-List_categories= [
-    {"id": 1, "nombre": "Alimentación"},  
-    {"id": 2, "nombre": "Transporte"},
-    {"id": 3, "nombre": "Ocio"},  
-    {"id": 4, "nombre": "Malcriadas"},
-]
 
-def get_all_categorias(list):
-    return JSONResponse(content=list, status_code=200)
+def get_all_categorias():
+    db = SessionLocal()    
+    query = db.query(CategoriaEgresoModel)
+    result = query.all()
+    return JSONResponse(content=jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
-def delete_categoria(id,list):
-    for category in list:
-        if category["id"]==id:
-            list.remove(category)
-            return JSONResponse(content={"message": "Category was removed successfully" }, status_code=200)
-        
-def create_new_categoria(categoria:Categoria_Egreso, categorias):
-    newCategoria = categoria.model_dump()
-    categorias.append(newCategoria)
-    return JSONResponse(content={
-        "message": "Income was created successfully",
-        "data": newCategoria
-        }, status_code=201)
+def delete_categoria(id: int = Path(ge=1)) -> dict:
+    db = SessionLocal()    
+    element = db.query(CategoriaEgresoModel).filter(CategoriaEgresoModel.id == id).first()    
+    if not element:        
+        return JSONResponse(
+            content={            
+                "message": "The requested categorie was not found",            
+                "data": None        
+                }, 
+            status_code=status.HTTP_404_NOT_FOUND
+            )    
+    db.delete(element)    
+    db.commit()    
+    return JSONResponse(
+        content={        
+            "message": "The categorie wass removed successfully",        
+            "data": None    
+            }, 
+        status_code=status.HTTP_200_OK
+        )
+
+def create_new_categoria(categoria:Categoria_Egreso = Body()) -> dict:
+    db = SessionLocal()    
+    new_categorie = CategoriaEgresoModel(**categoria.model_dump())    
+    db.add(new_categorie)
+    db.commit()    
+    return JSONResponse(
+        content={        
+        "message": "The categorie was successfully created",        
+        "data": categoria.model_dump()    
+        }, 
+        status_code=status.HTTP_201_CREATED
+    )
 
 #CRUD categorías
 
-@categories_egress_router.get('/',response_model=List[Categoria_Egreso],description="Returns all categories")
+@categories_egress_router.get('/categories-egress',response_model=List[Categoria_Egreso],description="Returns all categories")
 def get_categories():
-    return get_all_categorias(List_categories)
+    return get_all_categorias()
 
-@categories_egress_router.post('/',response_model=dict,description="Creates a new categorie")
+@categories_egress_router.post('/categories-egress',response_model=dict,description="Creates a new categorie")
 def create_categorie(categorie: Categoria_Egreso = Body()):
-    return create_new_categoria(categorie, List_categories)
+    return create_new_categoria(categorie)
 
-@categories_egress_router.delete('/{id}',response_model=dict,description="Removes specific categorie")
+@categories_egress_router.delete('/categories-egress{id}',response_model=dict,description="Removes specific categorie")
 def remove_categorie(id: int = Path(ge=1)) -> dict:
-    return delete_categoria(id, List_categories)
+    return delete_categoria(id)

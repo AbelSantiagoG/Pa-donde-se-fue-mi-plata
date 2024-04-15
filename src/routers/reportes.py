@@ -2,13 +2,10 @@ from fastapi import APIRouter, Body, Query, Path, status
 from fastapi.responses import JSONResponse
 from typing import List
 from fastapi import APIRouter
-from src.routers.ingresos import List_incomes
-from src.routers.egresos import List_egress
-from src.routers.categoria_ingreso import List_categories
 
 reportes_router = APIRouter()
 
-#REPORTES
+""" #REPORTES
 @reportes_router.get('/basic_report',tags=['reports'], response_model=List, description="Returns the basic report")
 def get_basic_report():
     egresos = 0
@@ -29,7 +26,7 @@ def get_basic_report():
 
 @reportes_router.get('/expanded_report',tags=['reports'],description="Return expanded report")
 def get_expanded_report():
-    return expanded_report(List_categories,List_egress, List_incomes)
+    return expanded_report(List_categories,List_egress, List_incomes) """
 
 def expanded_report(listCategories, listExpense, listIncome):
     diccionary = {category["id"]: [] for category in listCategories}

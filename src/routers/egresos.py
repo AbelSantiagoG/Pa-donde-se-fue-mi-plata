@@ -7,24 +7,6 @@ from src.config.database import SessionLocal
 from src.models.egreso import Egreso as EgresoModel 
 from fastapi.encoders import jsonable_encoder
 
-
-List_egress= [
-    {
-        "id": 1,
-        "Fecha": "2024-04-02",
-        "descripcion": "se egresó plata",
-        "valor":  69.13,
-        "categoria": 8
-    },
-    {
-        "id": 2,
-        "Fecha": "2024-04-02",
-        "descripcion": "se egresó plata",
-        "valor":  15.9,
-        "categoria": 7
-    }
-]
-
 egress_router = APIRouter(prefix='/egress', tags=['egress'])
 
 
@@ -34,42 +16,70 @@ def get_all_egresos():
     result = query.all()
     return JSONResponse(jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
-def get_egreso_by_id(id,egresos):
-    for egreso in egresos:
-        if egreso["id"] == id:
-            return JSONResponse(content=egreso, status_code=200)
-    return JSONResponse(content={"message":"Not found egreso"},status_code=404)
+def get_egreso_by_id(id):
+    db = SessionLocal()    
+    element = db.query(EgresoModel).filter(EgresoModel.id == id).first()    
+    if not element:        
+        return JSONResponse(
+            content={            
+                "message": "The requested egress was not found",            
+                "data": None        }, 
+            status_code=status.HTTP_404_NOT_FOUND
+            )    
+    return JSONResponse(
+        content=jsonable_encoder(element),                        
+        status_code=status.HTTP_200_OK
+        )
 
-def create_new_egreso(egreso:Egresos, egresos):
-    newEgreso = egreso.model_dump()
-    egresos.append(newEgreso)
-    return JSONResponse(content={
-        "message": "The egreso was created successfully",
-        "data": newEgreso
-        }, status_code=201) 
+def create_new_egreso(egreso:Egresos = Body()):
+    db = SessionLocal()    
+    new_egress = EgresoModel(**egreso.model_dump())    
+    db.add(new_egress)
+    db.commit()    
+    return JSONResponse(
+        content={        
+        "message": "The egress was successfully created",        
+        "data": egreso.model_dump()    
+        }, 
+        status_code=status.HTTP_201_CREATED
+    )
 
-def delete_egreso(id, egresos):
-    for element in egresos:
-        if element['id'] == id:
-            egresos.remove(element)
-            return JSONResponse(content={"message": "The egreso was removed successfully", "data": None }, status_code=200)
-    return JSONResponse(content={ "message": "The egreso does not exists", "data": None }, status_code=404)
+def delete_egreso(id: int = Path(ge=1)):
+    db = SessionLocal()    
+    element = db.query(EgresoModel).filter(EgresoModel.id == id).first()    
+    if not element:        
+        return JSONResponse(
+            content={            
+                "message": "The requested egress was not found",            
+                "data": None        
+                }, 
+            status_code=status.HTTP_404_NOT_FOUND
+            )    
+    db.delete(element)    
+    db.commit()    
+    return JSONResponse(
+        content={        
+            "message": "The egress wass removed successfully",        
+            "data": None    
+            }, 
+        status_code=status.HTTP_200_OK
+        )
 
 
 #CRUD egresos
 
-@egress_router.get('/',response_model=List[Egresos],description="Returns all egress")
+@egress_router.get('',response_model=List[Egresos],description="Returns all egress")
 def get_egress():
     return get_all_egresos()
 
-@egress_router.get('/{id}',response_model=Egresos,description="Returns data of one specific egress")
+@egress_router.get('{id}',response_model=Egresos,description="Returns data of one specific egress")
 def get_egress(id: int ) -> Egresos:
     return get_egreso_by_id(id)
 
-@egress_router.post('/',response_model=dict,description="Creates a new egress")
+@egress_router.post('',response_model=dict,description="Creates a new egress")
 def create_egress(egreso: Egresos = Body()):
     return create_new_egreso(egreso)
 
-@egress_router.delete('/{id}',response_model=dict,description="Removes specific egress")
+@egress_router.delete('{id}',response_model=dict,description="Removes specific egress")
 def remove_egress(id: int = Path(ge=1)) -> dict:
     return delete_egreso(id)

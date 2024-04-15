@@ -32,10 +32,10 @@ app.add_middleware(ErrorHandler)
 #################################################
 #      Router's definition (endpoints sets)     #
 
-app.include_router(prefix="/incomes", router= incomes_router)
-app.include_router(prefix="/egress", router= egress_router)
-app.include_router(prefix="/categories-incomes", router= categories_incomes_router)
-app.include_router(prefix="/categories-egress", router= categories_egress_router)
+app.include_router(router= incomes_router)
+app.include_router(router= egress_router)
+app.include_router(router= categories_incomes_router)
+app.include_router(router= categories_egress_router)
 app.include_router(prefix="/reports", router= reportes_router)
 
 #################################################
