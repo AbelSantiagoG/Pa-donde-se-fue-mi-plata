@@ -24,7 +24,7 @@ List_incomes= [
     }
 ]
 
-incomes_router = APIRouter()
+incomes_router = APIRouter(prefix='/incomes', tags=['incomes'])
 
 def get_all_incomes(incomes) :
     return JSONResponse(content=incomes, status_code=200)
@@ -52,18 +52,18 @@ def delete_income(id, incomes):
 
 #CRUD ingresos
 
-@incomes_router.get('/incomes',tags=['incomes'],response_model=List[Income],description="Returns all incomes")
+@incomes_router.get('/',response_model=List[Income],description="Returns all incomes")
 def get_incomes():
     return get_all_incomes(List_incomes)
 
-@incomes_router.get('/incomes/{id}',tags=['incomes'],response_model=Income,description="Returns data of one specific income")
+@incomes_router.get('/{id}',response_model=Income,description="Returns data of one specific income")
 def get_income(id: int ) -> Income:
     return get_income_by_id(id, List_incomes)
 
-@incomes_router.post('/incomes',tags=['incomes'],response_model=dict,description="Creates a new income")
+@incomes_router.post('/',response_model=dict,description="Creates a new income")
 def create_income(ingreso: Income = Body()):
     return create_new_income(ingreso, List_incomes)
 
-@incomes_router.delete('/incomes/{id}',tags=['incomes'],response_model=dict,description="Removes specific income")
+@incomes_router.delete('/{id}',response_model=dict,description="Removes specific income")
 def remove_income(id: int = Path(ge=1)) -> dict:
     return delete_income(id, List_incomes)

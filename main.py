@@ -2,10 +2,10 @@ from fastapi import FastAPI, Body, Path
 from src.middlewares.error_handler import ErrorHandler
 from src.routers.ingresos import incomes_router
 from src.routers.egresos import egress_router
-from routers.categoria_ingreso import categories_router
+from src.routers.categoria_ingreso import categories_incomes_router
+from src.routers.categoria_egreso import categories_egress_router
 from src.routers.reportes import reportes_router
 from src.config.database import Base, engine
-from models.categoria_ingreso import Categoria 
 from src.models.egreso import Egreso
 from src.models.ingreso import Ingreso
 
@@ -32,10 +32,11 @@ app.add_middleware(ErrorHandler)
 #################################################
 #      Router's definition (endpoints sets)     #
 
-app.include_router(prefix="/incomes", router=incomes_router)
-app.include_router(prefix="/egress", router=egress_router)
-app.include_router(prefix="/categories", router=categories_router)
-app.include_router(prefix="/reports", router=reportes_router)
+app.include_router(prefix="/incomes", router= incomes_router)
+app.include_router(prefix="/egress", router= egress_router)
+app.include_router(prefix="/categories-incomes", router= categories_incomes_router)
+app.include_router(prefix="/categories-egress", router= categories_egress_router)
+app.include_router(prefix="/reports", router= reportes_router)
 
 #################################################
 

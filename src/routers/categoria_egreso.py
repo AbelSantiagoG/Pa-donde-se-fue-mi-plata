@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Body, Query, Path, status
 from fastapi.responses import JSONResponse
 from typing import List
-from schemas.categoria_ingreso import Categoria
+from src.schemas.categoria_egreso import Categoria_Egreso 
 from fastapi import APIRouter
 from src.config.database import SessionLocal 
-from models.categoria_ingreso import Categoria as CategoriaModel 
+from src.models.categoria_egreso import Categoria_Egreso as CategoriaModel 
 from fastapi.encoders import jsonable_encoder
 
-categories_egress = APIRouter(prefix='/categories-egress', tags=['categories_egress'])
+categories_egress_router = APIRouter(prefix='/categories-egress', tags=['categories_egress'])
 
 List_categories= [
     {"id": 1, "nombre": "Alimentación"},  
@@ -25,7 +25,7 @@ def delete_categoria(id,list):
             list.remove(category)
             return JSONResponse(content={"message": "Category was removed successfully" }, status_code=200)
         
-def create_new_categoria(categoria:Categoria, categorias):
+def create_new_categoria(categoria:Categoria_Egreso, categorias):
     newCategoria = categoria.model_dump()
     categorias.append(newCategoria)
     return JSONResponse(content={
@@ -35,14 +35,14 @@ def create_new_categoria(categoria:Categoria, categorias):
 
 #CRUD categorías
 
-@categories_egress.get('/',response_model=List[Categoria],description="Returns all categories")
+@categories_egress_router.get('/',response_model=List[Categoria_Egreso],description="Returns all categories")
 def get_categories():
     return get_all_categorias(List_categories)
 
-@categories_egress.post('/',response_model=dict,description="Creates a new categorie")
-def create_categorie(categorie: Categoria = Body()):
+@categories_egress_router.post('/',response_model=dict,description="Creates a new categorie")
+def create_categorie(categorie: Categoria_Egreso = Body()):
     return create_new_categoria(categorie, List_categories)
 
-@categories_egress.delete('/{id}',response_model=dict,description="Removes specific categorie")
+@categories_egress_router.delete('/{id}',response_model=dict,description="Removes specific categorie")
 def remove_categorie(id: int = Path(ge=1)) -> dict:
     return delete_categoria(id, List_categories)
