@@ -28,8 +28,11 @@ from fastapi.encoders import jsonable_encoder
 egress_router = APIRouter()
 
 
-def get_all_egresos(egresos) :
-    return JSONResponse(content=egresos, status_code=200)
+def get_all_egresos():
+    db= SessionLocal()    
+    query = db.query(EgresoModel)
+    result = query.all()
+    return JSONResponse(jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
 def get_egreso_by_id(id,egresos):
     for egreso in egresos:
@@ -57,16 +60,16 @@ def delete_egreso(id, egresos):
 
 @egress_router.get('/egress',tags=['egress'],response_model=List[Egresos],description="Returns all egress")
 def get_egress():
-    return get_all_egresos(List_egress)
+    return get_all_egresos()
 
 @egress_router.get('/egress/{id}',tags=['egress'],response_model=Egresos,description="Returns data of one specific egress")
 def get_egress(id: int ) -> Egresos:
-    return get_egreso_by_id(id, List_egress)
+    return get_egreso_by_id(id)
 
 @egress_router.post('/egress',tags=['egress'],response_model=dict,description="Creates a new egress")
 def create_egress(egreso: Egresos = Body()):
-    return create_new_egreso(egreso, List_egress)
+    return create_new_egreso(egreso)
 
 @egress_router.delete('/egress/{id}',tags=['egress'],response_model=dict,description="Removes specific egress")
 def remove_egress(id: int = Path(ge=1)) -> dict:
-    return delete_egreso(id, List_egress)
+    return delete_egreso(id)

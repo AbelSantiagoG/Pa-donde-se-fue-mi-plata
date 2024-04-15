@@ -8,6 +8,8 @@ class Egreso(Base):
     id              = Column(Integer, primary_key=True, autoincrement=True)    
     fecha           = Column(Date)    
     descripcion     = Column(String(length=150))    
-    password        = Column(String(length=64))    
     valor           = Column(Integer)
-    categoria = relationship("Category", back_populates="egresos") 
+    categoria_id    = Column(Integer, ForeignKey("categorias.id"))
+
+    categoria       = relationship("Category", back_populates="egresos") 
+    

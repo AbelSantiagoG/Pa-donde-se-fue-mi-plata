@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter
 from src.routers.ingresos import List_incomes
 from src.routers.egresos import List_egress
-from src.routers.categorias import List_categories
+from routers.categoria_ingreso import List_categories
 
 reportes_router = APIRouter()
 
