@@ -11,4 +11,4 @@ class Ingreso(Base):
     valor           = Column(Integer)   
     categoria_id    = Column(Integer, ForeignKey("categorias_ingresos.id"))
 
-    categoria = relationship("Category", back_populates="ingresos")
+    categoria = relationship("Categoria_Ingreso", back_populates="ingresos")

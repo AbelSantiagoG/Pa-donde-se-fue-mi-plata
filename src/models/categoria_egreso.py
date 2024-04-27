@@ -9,4 +9,3 @@ class Categoria_Egreso(Base):
     descripcion     = Column(String(length=60))
 
     egresos = relationship("Egreso", back_populates="categoria")
-    ingresos = relationship("Ingreso", back_populates="categoria")

@@ -16,7 +16,7 @@ def get_all_egresos():
     result = query.all()
     return JSONResponse(jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
-def get_egreso_by_id(id):
+def get_egreso_by_id(id: int = Path(ge=1)):
     db = SessionLocal()    
     element = db.query(EgresoModel).filter(EgresoModel.id == id).first()    
     if not element:        
@@ -73,7 +73,7 @@ def get_egress():
     return get_all_egresos()
 
 @egress_router.get('{id}',response_model=Egresos,description="Returns data of one specific egress")
-def get_egress(id: int ) -> Egresos:
+def get_egress(id: int = Path(ge=1)) -> Egresos:
     return get_egreso_by_id(id)
 
 @egress_router.post('',response_model=dict,description="Creates a new egress")

@@ -9,13 +9,13 @@ from fastapi.encoders import jsonable_encoder
 
 incomes_router = APIRouter(prefix='/incomes', tags=['incomes'])
 
-def get_all_incomes(incomes) :
+def get_all_incomes() :
     db= SessionLocal()    
     query = db.query(IngresoModel)
     result = query.all()
     return JSONResponse(jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
-def get_income_by_id(id,incomes):
+def get_income_by_id(id: int = Path(ge=1, le=5000)):
     db = SessionLocal()    
     element = db.query(IngresoModel).filter(IngresoModel.id == id).first()    
     if not element:        
@@ -32,8 +32,8 @@ def get_income_by_id(id,incomes):
 
 def create_new_income(ingreso:Income = Body()):
     db = SessionLocal()    
-    new_egress = IngresoModel(**ingreso.model_dump())    
-    db.add(new_egress)
+    new_income = IngresoModel(**ingreso.model_dump())    
+    db.add(new_income)
     db.commit()    
     return JSONResponse(
         content={        

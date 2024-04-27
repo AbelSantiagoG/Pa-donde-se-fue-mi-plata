@@ -8,6 +8,5 @@ class Categoria_Ingreso(Base):
     id              = Column(Integer, primary_key=True, autoincrement=True)      
     descripcion     = Column(String(length=60))
 
-    egresos = relationship("Egreso", back_populates="categoria")
     ingresos = relationship("Ingreso", back_populates="categoria")
 
