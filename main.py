@@ -6,8 +6,6 @@ from src.routers.categoria_ingreso import categories_incomes_router
 from src.routers.categoria_egreso import categories_egress_router
 from src.routers.reportes import reportes_router
 from src.config.database import Base, engine
-from src.models.egreso import Egreso
-from src.models.ingreso import Ingreso
 
 Base.metadata.create_all(bind=engine)
 

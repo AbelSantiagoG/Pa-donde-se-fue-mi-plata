@@ -1,16 +1,20 @@
 from sqlalchemy import create_engine 
-from sqlalchemy.orm import sessionmaker 
+from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
+from contextlib import contextmanager
 
 database_url = "sqlite:///./database.sqlite"
 
-engine = create_engine(database_url,
-                    native_datetime=True,                       
-                    connect_args={                           
-                        "check_same_thread": False})
+engine = create_engine(database_url,native_datetime=True,connect_args={ "check_same_thread": False})
 
-SessionLocal = sessionmaker(bind=engine,                             
-                            autocommit=False, 
-                            autoflush=False)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 Base = declarative_base()
+
+@contextmanager
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
