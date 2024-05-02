@@ -18,19 +18,19 @@ def get_categories()-> List[Categoria_Ingreso]:
     result = CategoriaIngresoRepository(db).get_all_categorias()
     return JSONResponse(content=jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
-@categories_incomes_router.post('',response_model=dict,description="Creates a new categorie")
+@categories_incomes_router.post('',response_model=Categoria_Ingreso, description="Creates a new category")
 def create_categorie(categorie: Categoria_Ingreso = Body()) -> dict:
     db= SessionLocal()
     new_categorie = CategoriaIngresoRepository(db).create_new_categoria(categorie)
     return JSONResponse(
         content={        
-        "message": "The categorie was successfully created",        
+        "message": "The category was successfully created",        
         "data": jsonable_encoder(new_categorie)    
         }, 
         status_code=status.HTTP_201_CREATED
     )
 
-@categories_incomes_router.delete('{id}',response_model=dict,description="Removes specific categorie")
+@categories_incomes_router.delete('{id}',response_model=dict,description="Removes specific category")
 def remove_categorie(id: int = Path(ge=1)) -> dict:
     db = SessionLocal()
     element = CategoriaIngresoRepository(db).get_categorie_by_id(id)

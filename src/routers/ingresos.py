@@ -21,7 +21,7 @@ def get_categories()-> List[Income]:
 @incomes_router.get('{id}',response_model=Income,description="Returns data of one specific income")
 def get_incomes(id: int = Path(ge=1)) -> Income:
     db = SessionLocal()
-    element=  IngresoRepository(db).get_egreso_by_id(id)
+    element=  IngresoRepository(db).get_ingreso_by_id(id)
     if not element:        
         return JSONResponse(
             content={            

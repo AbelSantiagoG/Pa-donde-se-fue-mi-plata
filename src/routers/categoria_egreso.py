@@ -18,7 +18,7 @@ def get_categories()-> List[Categoria_Egreso]:
     result = CategoriaEgresoRepository(db).get_all_categorias()
     return JSONResponse(content=jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
-@categories_egress_router.post('/categories-egress',response_model=dict,description="Creates a new categorie")
+@categories_egress_router.post('/categories-egress',response_model=Categoria_Egreso,description="Creates a new categorie")
 def create_categorie(categorie: Categoria_Egreso = Body()) -> dict:
     db= SessionLocal()
     new_categorie = CategoriaEgresoRepository(db).create_new_categoria(categorie)
