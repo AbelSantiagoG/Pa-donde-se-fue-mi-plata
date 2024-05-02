@@ -58,7 +58,7 @@ def remove_incomes(id: int = Path(ge=1)) -> dict:
                 }, 
             status_code=status.HTTP_404_NOT_FOUND
             )    
-    IngresoRepository(db).delete_ingreso(element)  
+    IngresoRepository(db).delete_ingreso(id)  
     return JSONResponse(
         content={        
             "message": "The income was removed successfully",        

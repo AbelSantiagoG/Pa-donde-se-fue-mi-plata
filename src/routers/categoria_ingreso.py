@@ -42,7 +42,7 @@ def remove_categorie(id: int = Path(ge=1)) -> dict:
                 }, 
             status_code=status.HTTP_404_NOT_FOUND
             )    
-    CategoriaIngresoRepository(db).delete_categoria(element)  
+    CategoriaIngresoRepository(db).delete_categoria(id)  
     return JSONResponse(
         content={        
             "message": "The categorie was removed successfully",        

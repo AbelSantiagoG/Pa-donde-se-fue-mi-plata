@@ -58,7 +58,7 @@ def remove_egress(id: int = Path(ge=1)) -> dict:
                 }, 
             status_code=status.HTTP_404_NOT_FOUND
             )    
-    EgresoRepository(db).delete_egreso(element)  
+    EgresoRepository(db).delete_egreso(id)  
     return JSONResponse(
         content={        
             "message": "The egress was removed successfully",        
