@@ -1,7 +1,8 @@
-from sqlalchemy import create_engine 
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy import create_engine, func
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from contextlib import contextmanager
+
+
 
 database_url = "sqlite:///./database.sqlite"
 
@@ -11,10 +12,3 @@ SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 Base = declarative_base()
 
-@contextmanager
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()

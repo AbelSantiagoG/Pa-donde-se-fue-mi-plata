@@ -25,7 +25,7 @@ app = FastAPI(openapi_tags=tags_metadata)
 #################################################
 #                 Middlewares                   #
 
-# app.add_middleware(ErrorHandler)
+#app.add_middleware(ErrorHandler)
 
 #################################################
 #      Router's definition (endpoints sets)     #

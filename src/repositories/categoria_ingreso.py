@@ -26,3 +26,5 @@ class CategoriaIngresoRepository():
         self.db.commit()    
         self.db.refresh(new_categorie)
         return new_categorie
+    
+    

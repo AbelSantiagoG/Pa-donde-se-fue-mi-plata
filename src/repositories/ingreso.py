@@ -1,6 +1,7 @@
 from typing import List
 from src.schemas.ingresos import Income
 from src.models.ingreso import Ingreso as IngresoModel
+from sqlalchemy import func
 
 class IngresoRepository():    
     def __init__(self, db) -> None:        
@@ -26,3 +27,11 @@ class IngresoRepository():
         self.db.commit()    
         self.db.refresh(new_income)
         return new_income
+
+    def suma_all_incomes(self) -> float: 
+        total = self.db.query(func.sum(IngresoModel.value)).scalar()
+        return total or 0.0
+    
+    def get_ingresos_by_category(self, category:int) -> List[Income]:
+        query = self.db.query(IngresoModel).filter(IngresoModel.categoria == category)
+        return query.all()
