@@ -1,12 +1,13 @@
-from pydantic import BaseModel, Field, validator, model_validator
+from pydantic import BaseModel, Field, validator, EmailStr
 from typing import Optional
 
 
 class User (BaseModel):
     cedula: str = Field(min_length=4, title="Cedula del usuario", max_length=15)
     name: str = Field(min_length=3, title="Nombre del usuario", max_length=100)
-    email: str = Field(min_length=4, title="Email del usuario", max_length=150)
+    email: EmailStr = Field(min_length=4, title="Email del usuario", max_length=150)
     password: str = Field(min_length=8, title="Contraseña del usuario", max_length=150)
+    is_active: bool = Field(default=True, title="Status of the user")
 
     @validator("email")
     def email_validator(cls, email):
@@ -28,12 +29,22 @@ class User (BaseModel):
         assert isinstance(cedula, str) and len(cedula) >= 4, "La cedula debe tener al menos 4 caracteres"
         return cedula
 
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "cedula": "123456789",
-                "name": "Miguel",
-                "email": "miguel@gmail.com",
-                "password": "12345678"
-            }
+class Config:
+    from_attributes = True
+    json_schema_extra = {
+        "example": {
+            "cedula": "123456789",
+            "name": "Miguel",
+            "email": "miguel@gmail.com",
+            "password": "12345678"
         }
+    }
+
+class UserCreate (BaseModel):    
+    name: str = Field(min_length=3, max_length=100, title="Name of the user")    
+    email: EmailStr = Field(min_length=4, max_length=150, title="Email of the user")    
+    password: str = Field(min_length=8, title="Contraseña del usuario", max_length=150)
+
+class UserLogin (BaseModel):    
+    email: EmailStr = Field(min_length=4, max_length=150, alias="username", title="Email of the user")    
+    password: str = Field(min_length=8, title="Contraseña del usuario", max_length=150)

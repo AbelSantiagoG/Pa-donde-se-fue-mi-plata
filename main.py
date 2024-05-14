@@ -6,6 +6,7 @@ from src.routers.categoria_ingreso import categories_incomes_router
 from src.routers.categoria_egreso import categories_egress_router
 from src.routers.reportes import reportes_router
 from src.routers.user import user_router
+from src.routers.auth import auth_router
 
 from src.models.ingreso import Ingreso
 from src.models.egreso import Egreso
@@ -26,7 +27,8 @@ tags_metadata = [
     { "name": "egress", "description": "egresos"}, 
     { "name": "reports", "description": "reportes"},  
     { "name": "categories_incomes", "description": "categorias de los ingresos"},
-    { "name": "categories_egress", "description": "categorias de los egresos"}
+    { "name": "categories_egress", "description": "categorias de los egresos"},
+    { "name": "auth", "description": "User's authentication"}
 ]
 
 app = FastAPI(openapi_tags=tags_metadata)
@@ -45,6 +47,7 @@ app.include_router(router= egress_router)
 app.include_router(router= categories_incomes_router)
 app.include_router(router= categories_egress_router)
 app.include_router(prefix="/reports", router= reportes_router)
+app.include_router(prefix="", router=auth_router)
 
 #################################################
 
