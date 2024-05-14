@@ -5,6 +5,14 @@ from src.routers.egresos import egress_router
 from src.routers.categoria_ingreso import categories_incomes_router
 from src.routers.categoria_egreso import categories_egress_router
 from src.routers.reportes import reportes_router
+from src.routers.user import user_router
+
+from src.models.ingreso import Ingreso
+from src.models.egreso import Egreso
+from src.models.categoria_ingreso import Categoria_Ingreso
+from src.models.categoria_egreso import Categoria_Egreso
+from src.models.user import User
+
 from src.config.database import Base, engine
 
 Base.metadata.create_all(bind=engine)
@@ -13,6 +21,7 @@ Base.metadata.create_all(bind=engine)
 #                     Tags                       #
 
 tags_metadata = [
+    {"name": "users", "description": "usuarios"},
     {"name": "incomes", "description": "imgresos"}, 
     { "name": "egress", "description": "egresos"}, 
     { "name": "reports", "description": "reportes"},  
@@ -30,6 +39,7 @@ app = FastAPI(openapi_tags=tags_metadata)
 #################################################
 #      Router's definition (endpoints sets)     #
 
+app.include_router(router= user_router)
 app.include_router(router= incomes_router)
 app.include_router(router= egress_router)
 app.include_router(router= categories_incomes_router)

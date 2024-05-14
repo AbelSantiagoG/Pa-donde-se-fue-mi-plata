@@ -6,6 +6,6 @@ class Categoria_Egreso(Base):
     __tablename__ = "categorias_egresos"    
 
     id              = Column(Integer, primary_key=True, autoincrement=True)      
-    description     = Column(String(length=60))
+    description     = Column(String(length=200))
 
     egresos = relationship("Egreso", back_populates="categoria_egreso")

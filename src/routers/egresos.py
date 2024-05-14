@@ -49,7 +49,7 @@ def create_categorie(egress: Egresos = Body()) -> dict:
 @egress_router.delete('{id}',response_model=dict,description="Removes specific egress")
 def remove_egress(id: int = Path(ge=1)) -> dict:
     db = SessionLocal()
-    element = EgresoRepository(db).get_egress_by_id(id)
+    element = EgresoRepository(db).get_egreso_by_id(id)
     if not element:        
         return JSONResponse(
             content={            

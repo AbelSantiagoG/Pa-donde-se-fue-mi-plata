@@ -28,10 +28,18 @@ class IngresoRepository():
         self.db.refresh(new_income)
         return new_income
 
-    def suma_all_incomes(self) -> float: 
-        total = self.db.query(func.sum(IngresoModel.value)).scalar()
+    def suma_all_incomes_by_user(self, cedula:str) -> float: 
+        total = self.db.query(func.sum(IngresoModel.value)).filter(IngresoModel.user_cedula == cedula).scalar()
         return total or 0.0
     
-    def get_ingresos_by_category(self, category:int) -> List[Income]:
-        query = self.db.query(IngresoModel).filter(IngresoModel.categoria == category)
+    def get_ingresos_by_category(self, category_id: int) -> List[Income]:
+        query = self.db.query(IngresoModel).filter(IngresoModel.categoria_ingreso == category_id)
+        return query.all()
+    
+    def get_all_incomes_by_user(self, cedula: str) -> List[Income]:
+        query = self.db.query(IngresoModel).filter(IngresoModel.user_cedula == cedula)
+        return query.all()
+    
+    def get_ingresos_by_category_by_user(self, category_id: int, cedula: str) -> List[Income]:
+        query = self.db.query(IngresoModel).filter(IngresoModel.categoria_ingreso == category_id).filter(IngresoModel.user_cedula == cedula)
         return query.all()

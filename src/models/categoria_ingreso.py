@@ -6,7 +6,7 @@ class Categoria_Ingreso(Base):
     __tablename__ = "categorias_ingresos"    
 
     id              = Column(Integer, primary_key=True, autoincrement=True)      
-    description     = Column(String(length=60))
+    description     = Column(String(length=200))
 
     ingresos = relationship("Ingreso", back_populates="categoria_ingreso")
 
