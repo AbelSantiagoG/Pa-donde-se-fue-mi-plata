@@ -90,6 +90,5 @@ def secret_data(credentials: Annotated[HTTPAuthorizationCredentials,
         payload = auth_handler.decode_token(token=token) 
         if payload: 
             current_user = payload.get("sub") 
-            return f"Top Secret data only authorized users can access this info: 
-            {current_user}"
+            return f"Top Secret data only authorized users can access this info: {current_user}"
 

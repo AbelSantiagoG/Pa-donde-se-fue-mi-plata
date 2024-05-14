@@ -7,6 +7,11 @@ from src.config.database import SessionLocal
 from src.models.ingreso import Ingreso as IngresoModel 
 from fastapi.encoders import jsonable_encoder
 from src.repositories.ingreso import IngresoRepository
+from typing import Annotated 
+from fastapi.security import HTTPAuthorizationCredentials 
+from fastapi import Depends 
+from src.auth.has_access import security
+from src.auth import auth_handler
 
 incomes_router = APIRouter(prefix='/incomes', tags=['incomes'])
 
@@ -47,7 +52,11 @@ def create_categorie(income: Income = Body()) -> dict:
     )
 
 @incomes_router.delete('{id}',response_model=dict,description="Removes specific income")
-def remove_incomes(id: int = Path(ge=1)) -> dict:
+def remove_incomes(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)], id: int = Path(ge=1)) -> dict:
+    token = credentials.credentials 
+    payload = auth_handler.decode_token(token=token) 
+    if payload: 
+        issue = payload.get("xxx")
     db = SessionLocal()
     element = IngresoRepository(db).get_ingreso_by_id(id)
     if not element:        
@@ -65,4 +74,4 @@ def remove_incomes(id: int = Path(ge=1)) -> dict:
             "data": None    
             }, 
         status_code=status.HTTP_200_OK
-        )
+    )
