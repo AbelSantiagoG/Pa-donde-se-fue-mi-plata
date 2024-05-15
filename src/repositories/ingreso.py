@@ -41,5 +41,5 @@ class IngresoRepository():
         return query.all()
     
     def get_ingresos_by_category_by_user(self, category_id: int, cedula: str) -> List[Income]:
-        query = self.db.query(IngresoModel).filter(IngresoModel.categoria_ingreso == category_id).filter(IngresoModel.user_cedula == cedula)
+        query = self.db.query(IngresoModel).filter(IngresoModel.categoria_ingreso.has(id=category_id)).filter(IngresoModel.user_cedula == cedula)
         return query.all()

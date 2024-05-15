@@ -42,5 +42,5 @@ class EgresoRepository():
         return query.all()
 
     def get_egress_by_category_by_user(self, category_id: int, cedula: str) -> List[Egresos]:
-        query = self.db.query(EgresoModel).filter(EgresoModel.categoria_egreso == category_id).filter(EgresoModel.user_cedula == cedula)
+        query = self.db.query(EgresoModel).filter(EgresoModel.categoria_egreso.has(id=category_id)).filter(EgresoModel.user_cedula == cedula)
         return query.all()
