@@ -23,7 +23,7 @@ def get_categories()-> List[Income]:
     result = IngresoRepository(db).get_all_incomes()
     return JSONResponse(content=jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
-@incomes_router.get('{id}',response_model=Income,description="Returns data of one specific income")
+@incomes_router.get('/{id}',response_model=Income,description="Returns data of one specific income")
 def get_incomes(id: int = Path(ge=1)) -> Income:
     db = SessionLocal()
     element=  IngresoRepository(db).get_ingreso_by_id(id)
@@ -51,12 +51,8 @@ def create_categorie(income: Income = Body()) -> dict:
         status_code=status.HTTP_201_CREATED
     )
 
-@incomes_router.delete('{id}',response_model=dict,description="Removes specific income")
-def remove_incomes(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)], id: int = Path(ge=1)) -> dict:
-    token = credentials.credentials 
-    payload = auth_handler.decode_token(token=token) 
-    if payload: 
-        issue = payload.get("xxx")
+@incomes_router.delete('/{id}',response_model=dict,description="Removes specific income")
+def remove_incomes( id: int = Path(ge=1)) -> dict:
     db = SessionLocal()
     element = IngresoRepository(db).get_ingreso_by_id(id)
     if not element:        

@@ -5,7 +5,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.encoders import jsonable_encoder 
 from src.repositories.auth import AuthRepository 
 from src.config.database import SessionLocal 
-from src.schemas.user import UserCreate as UserCreateSchema 
+from src.schemas.user import User as UserCreateSchema 
 from src.schemas.user import UserLogin as UserLoginSchema 
 from src.auth.has_access import has_access, security    
 from src.auth import auth_handler
@@ -43,7 +43,6 @@ def register_user(user: UserCreateSchema = Body()) -> dict:
     description="Authenticate an user" 
     ) 
 def login_user(user: UserLoginSchema) -> dict: 
-    try: 
         access_token, refresh_token = AuthRepository().login_user(user) 
         
         return JSONResponse( 
@@ -51,12 +50,6 @@ def login_user(user: UserLoginSchema) -> dict:
                 "refresh_token": refresh_token}, 
             status_code=status.HTTP_200_OK, 
         )   
-    except Exception as err: 
-        return JSONResponse( 
-            content={"message": "Invalid credentials",                      
-                    "data": None}, 
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-        )
 
 @auth_router.get( 
     "/refresh_token", 

@@ -3,7 +3,7 @@ from src.repositories.user import UserRepository
 from src.config.database import SessionLocal 
 from src.auth import auth_handler 
 from src.schemas.user import UserLogin as UserLoginSchema 
-from src.schemas.user import UserCreate as UserCreateSchema
+from src.schemas.user import User as UserCreateSchema
 
 class AuthRepository:    
     def __init__(self) -> None:        
@@ -12,20 +12,22 @@ class AuthRepository:
     def register_user(self,                       
                     user: UserCreateSchema) -> dict:        
             db = SessionLocal()        
-            if UserRepository(db).get_user(email=user.email) != None:            
+            if UserRepository(db).get_user_by_email(email=user.email) != None:            
                 raise Exception("Account already exists")        
             hashed_password = auth_handler.hash_password(password=user.password)        
-            new_user: UserCreateSchema = UserCreateSchema(            
+            new_user: UserCreateSchema = UserCreateSchema(   
+                cedula= user.cedula,
                 name=user.name,             
                 email=user.email, 
                 password=hashed_password,             
                 is_active=True        
             )        
-            return UserRepository(db).create_user(new_user)
+            return UserRepository(db).create_new_user(new_user)
 
     def login_user(self, user: UserLoginSchema) -> dict:        
         db = SessionLocal()        
-        check_user = UserRepository(db).get_user(email=user.email)        
+        check_user = UserRepository(db).get_user_by_email(email=user.email)        
+        print(check_user)
         if check_user is None:            
             return HTTPException(                
                 status_code=status.HTTP_401_UNAUTHORIZED,                

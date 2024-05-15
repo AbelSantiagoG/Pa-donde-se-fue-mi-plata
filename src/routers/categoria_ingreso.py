@@ -30,7 +30,7 @@ def create_categorie(categorie: Categoria_Ingreso = Body()) -> dict:
         status_code=status.HTTP_201_CREATED
     )
 
-@categories_incomes_router.delete('{id}',response_model=dict,description="Removes specific category")
+@categories_incomes_router.delete('/{id}',response_model=dict,description="Removes specific category")
 def remove_categorie(id: int = Path(ge=1)) -> dict:
     db = SessionLocal()
     element = CategoriaIngresoRepository(db).get_categorie_by_id(id)

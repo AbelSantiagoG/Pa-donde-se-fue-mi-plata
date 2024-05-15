@@ -23,8 +23,8 @@ class JWTHandler:
                 "iat": datetime.now(tz=timezone.utc),            
                 # sub (subject): Subject of the JWT (the user)            
                 "sub": user.email,           
-                # Custom Issues "scope": "access_token",            
-                "user.name": user.name, "user.id": user.id,        
+                "scope": "access_token",            
+                "user.name": user.name, "user.id": user.cedula,        
             }        
         return jwt.encode(payload, self.secret, algorithm=self.algorithm)
     
@@ -51,12 +51,9 @@ class JWTHandler:
     
     def refresh_token(self, refresh_token):        
         try:            
-            payload = jwt.decode(                
-                refresh_token, self.secret, algorithms=[self.algorithm]            
-                )            
-            
+            payload = jwt.decode(refresh_token, self.secret, algorithms=[self.algorithm])            
             if payload and payload["scope"] == "refresh_token":                
-                user = UserRepository.get_user(payload["sub"])                
+                user = UserRepository(self.db).get_user_by_email(payload["sub"])                
                 new_token = self.encode_token(user)                
                 return new_token
             raise HTTPException(status_code=401, detail="Invalid scope for token")        

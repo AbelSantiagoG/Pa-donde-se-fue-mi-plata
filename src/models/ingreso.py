@@ -13,7 +13,7 @@ class Ingreso(Base):
     user_cedula     = Column(String(length=15), ForeignKey("users.cedula"))
 
     categoria_ingreso = relationship("Categoria_Ingreso", back_populates="ingresos")
-    users              = relationship("User", back_populates="ingresos")
+    users              = relationship("User", back_populates="ingresos" )
 
     def to_dict(self):
         return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}

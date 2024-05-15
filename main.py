@@ -21,17 +21,17 @@ Base.metadata.create_all(bind=engine)
 ##################################################
 #                     Tags                       #
 
-tags_metadata = [
-    {"name": "users", "description": "usuarios"},
-    {"name": "incomes", "description": "imgresos"}, 
-    { "name": "egress", "description": "egresos"}, 
-    { "name": "reports", "description": "reportes"},  
-    { "name": "categories_incomes", "description": "categorias de los ingresos"},
-    { "name": "categories_egress", "description": "categorias de los egresos"},
-    { "name": "auth", "description": "User's authentication"}
-]
+# tags_metadata = [
+#     {"name": "users", "description": "usuarios"},
+#     {"name": "incomes", "description": "imgresos"}, 
+#     { "name": "egress", "description": "egresos"}, 
+#     { "name": "reports", "description": "reportes"},  
+#     { "name": "categories_incomes", "description": "categorias de los ingresos"},
+#     { "name": "categories_egress", "description": "categorias de los egresos"},
+#     { "name": "auth", "description": "User's authentication"}
+# ]
 
-app = FastAPI(openapi_tags=tags_metadata)
+app = FastAPI()
 
 #################################################
 #                 Middlewares                   #

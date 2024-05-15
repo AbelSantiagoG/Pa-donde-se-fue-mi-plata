@@ -18,7 +18,7 @@ def get_categories()-> List[Egresos]:
     result = EgresoRepository(db).get_all_egress()
     return JSONResponse(content=jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
-@egress_router.get('{id}',response_model=Egresos,description="Returns data of one specific egress")
+@egress_router.get('/{id}',response_model=Egresos,description="Returns data of one specific egress")
 def get_egress(id: int = Path(ge=1)) -> Egresos:
     db = SessionLocal()
     element=  EgresoRepository(db).get_egreso_by_id(id)
@@ -46,7 +46,7 @@ def create_categorie(egress: Egresos = Body()) -> dict:
         status_code=status.HTTP_201_CREATED
     )
 
-@egress_router.delete('{id}',response_model=dict,description="Removes specific egress")
+@egress_router.delete('/{id}',response_model=dict,description="Removes specific egress")
 def remove_egress(id: int = Path(ge=1)) -> dict:
     db = SessionLocal()
     element = EgresoRepository(db).get_egreso_by_id(id)

@@ -1,6 +1,5 @@
 from typing import List
 from src.schemas.user import User as UserSchema
-from src.schemas.user import UserCreate as UserCreateSchema
 from src.models.user import User as users
 
 class UserRepository:
@@ -11,7 +10,11 @@ class UserRepository:
         query = self.db.query(users)
         return query.all()
     
-    def get_user_by_ceula(self, cedula: str) -> UserSchema:
+    def get_user_by_email(self, email: str) -> UserSchema:
+        query = self.db.query(users).filter(users.email == email)
+        return query.first()
+    
+    def get_user_by_cedula(self, cedula: str) -> UserSchema:
         query = self.db.query(users).filter(users.cedula == cedula)
         return query.first()
     
@@ -21,7 +24,7 @@ class UserRepository:
         self.db.commit()
         return element
 
-    def create_new_user(self, user:UserSchema ) -> dict:
+    def create_new_user(self, user:UserSchema ) -> dict:   
         new_user = users(**user.model_dump())
         self.db.add(new_user)
         

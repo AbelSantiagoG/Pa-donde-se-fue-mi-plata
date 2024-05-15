@@ -11,7 +11,7 @@ class User(Base):
     password        = Column(String(length=150))
     is_active       = Column(Boolean, default=True)
 
-    ingresos        = relationship("Ingreso", back_populates="users")
+    ingresos        = relationship("Ingreso", back_populates="users")   
     egresos         = relationship("Egreso", back_populates="users")
     
     def to_dict(self):

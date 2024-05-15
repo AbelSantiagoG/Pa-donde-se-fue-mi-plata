@@ -21,7 +21,7 @@ def get_categories()-> List[User]:
 @user_router.get('/{cedula}',response_model=User,description="devuelve un usuario por cedula")
 def get_user_by_id(cedula: str = Path(..., description="Cedula del usuario")) -> User:
     db = SessionLocal()
-    element=  UserRepository(db).get_user_by_ceula(cedula)
+    element=  UserRepository(db).get_user_by_cedula(cedula)
     if not element:        
         return JSONResponse(
             content={            
@@ -37,6 +37,8 @@ def get_user_by_id(cedula: str = Path(..., description="Cedula del usuario")) ->
 
 @user_router.post('',response_model=User,description="crea un nuevo usuario")
 def create_user(user: User = Body(..., description="Usuario a crear")) -> User:
+    if UserRepository(db).get_user_by_email(email=user.email) != None:            
+                raise Exception("No puede rey") 
     db = SessionLocal()
     new_user = UserRepository(db).create_new_user(user)
     return JSONResponse(
