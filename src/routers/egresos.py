@@ -8,6 +8,11 @@ from src.models.egreso import Egreso as EgresoModel
 from fastapi.encoders import jsonable_encoder
 from src.repositories.egreso import EgresoRepository
 
+from typing import Annotated 
+from fastapi.security import HTTPAuthorizationCredentials 
+from fastapi import Depends 
+from src.auth.has_access import security
+
 egress_router = APIRouter(prefix='/egress', tags=['egress'])
 
 #CRUD egresos
@@ -47,7 +52,7 @@ def create_categorie(egress: Egresos = Body()) -> dict:
     )
 
 @egress_router.delete('/{id}',response_model=dict,description="Removes specific egress")
-def remove_egress(id: int = Path(ge=1)) -> dict:
+def remove_egress(credentials: Annotated[HTTPAuthorizationCredentials,Depends(security)],id: int = Path(ge=1)) -> dict:
     db = SessionLocal()
     element = EgresoRepository(db).get_egreso_by_id(id)
     if not element:        

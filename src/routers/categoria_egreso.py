@@ -8,6 +8,11 @@ from src.models.categoria_egreso import Categoria_Egreso as CategoriaEgresoModel
 from fastapi.encoders import jsonable_encoder
 from src.repositories.categoria_egreso import CategoriaEgresoRepository
 
+from typing import Annotated 
+from fastapi.security import HTTPAuthorizationCredentials 
+from fastapi import Depends 
+from src.auth.has_access import security
+
 categories_egress_router = APIRouter(prefix='/categories-egress', tags=['categories_egress'])
 
 #CRUD categorías
@@ -31,7 +36,7 @@ def create_categorie(categorie: Categoria_Egreso = Body()) -> dict:
     )
 
 @categories_egress_router.delete('/{id}',response_model=dict,description="Removes specific categorie")
-def remove_categorie(id: int = Path(ge=1)) -> dict:
+def remove_categorie(credentials: Annotated[HTTPAuthorizationCredentials,Depends(security)], id: int = Path(ge=1)) -> dict:
     db = SessionLocal()
     element = CategoriaEgresoRepository(db).get_categorie_by_id(id)
     if not element:        

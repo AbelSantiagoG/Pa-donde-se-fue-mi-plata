@@ -8,18 +8,23 @@ from src.schemas.user import User
 from src.models.user import User as users
 from src.repositories.user import UserRepository
 
+from typing import Annotated 
+from fastapi.security import HTTPAuthorizationCredentials 
+from fastapi import Depends 
+from src.auth.has_access import security
+
 user_router = APIRouter(prefix='/users', tags=['users'])
 
 #CRUD user
 
 @user_router.get('',response_model=List[User],description="devuelve todos los usuarios")
-def get_categories()-> List[User]:
+def get_categories(credentials: Annotated[HTTPAuthorizationCredentials,Depends(security)])-> List[User]:
     db= SessionLocal()
     result = UserRepository(db).get_all_users()
     return JSONResponse(content=jsonable_encoder(result), status_code=status.HTTP_200_OK)
 
 @user_router.get('/{cedula}',response_model=User,description="devuelve un usuario por cedula")
-def get_user_by_id(cedula: str = Path(..., description="Cedula del usuario")) -> User:
+def get_user_by_id(credentials: Annotated[HTTPAuthorizationCredentials,Depends(security)],cedula: str = Path(..., description="Cedula del usuario")) -> User:
     db = SessionLocal()
     element=  UserRepository(db).get_user_by_cedula(cedula)
     if not element:        
@@ -36,7 +41,7 @@ def get_user_by_id(cedula: str = Path(..., description="Cedula del usuario")) ->
         )
 
 @user_router.post('',response_model=User,description="crea un nuevo usuario")
-def create_user(user: User = Body(..., description="Usuario a crear")) -> User:
+def create_user(credentials: Annotated[HTTPAuthorizationCredentials,Depends(security)],user: User = Body(..., description="Usuario a crear")) -> User:
     if UserRepository(db).get_user_by_email(email=user.email) != None:            
                 raise Exception("No puede rey") 
     db = SessionLocal()
@@ -47,7 +52,7 @@ def create_user(user: User = Body(..., description="Usuario a crear")) -> User:
     )
 
 @user_router.delete('/{cedula}',description="elimina un usuario")
-def delete_user(cedula: str = Path(..., description="Cedula del usuario")) -> User:
+def delete_user(credentials: Annotated[HTTPAuthorizationCredentials,Depends(security)],cedula: str = Path(..., description="Cedula del usuario")) -> User:
     db = SessionLocal()
     element = UserRepository(db).delete_user(cedula)
     if not element:        
@@ -64,7 +69,7 @@ def delete_user(cedula: str = Path(..., description="Cedula del usuario")) -> Us
     )
 
 @user_router.put('/{cedula}',response_model=User,description="actualiza un usuario")
-def update_user(cedula: str = Path(..., description="Cedula del usuario"), user: User = Body(..., description="Usuario a actualizar")) -> User:
+def update_user(credentials: Annotated[HTTPAuthorizationCredentials,Depends(security)],cedula: str = Path(..., description="Cedula del usuario"), user: User = Body(..., description="Usuario a actualizar")) -> User:
     db = SessionLocal()
     element = UserRepository(db).update_user(cedula, user)
     if not element:        

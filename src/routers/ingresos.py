@@ -52,7 +52,7 @@ def create_categorie(income: Income = Body()) -> dict:
     )
 
 @incomes_router.delete('/{id}',response_model=dict,description="Removes specific income")
-def remove_incomes( id: int = Path(ge=1)) -> dict:
+def remove_incomes(credentials: Annotated[HTTPAuthorizationCredentials,Depends(security)], id: int = Path(ge=1)) -> dict:
     db = SessionLocal()
     element = IngresoRepository(db).get_ingreso_by_id(id)
     if not element:        
