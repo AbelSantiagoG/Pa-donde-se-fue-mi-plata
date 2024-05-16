@@ -63,7 +63,9 @@ def remove_incomes(credentials: Annotated[HTTPAuthorizationCredentials,Depends(s
                 }, 
             status_code=status.HTTP_404_NOT_FOUND
             )    
-    IngresoRepository(db).delete_ingreso(id)  
+    IngresoRepository(db).delete_ingreso(id)     
+    db.close()
+    db = SessionLocal()
     return JSONResponse(
         content={        
             "message": "The income was removed successfully",        
